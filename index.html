@@ -235,7 +235,7 @@
 
     <div class="stats">
       <div class="stat warn"><b id="statClips">3</b><small>clips to check</small></div>
-      <div class="stat warn"><b>2</b><small>reels held</small></div>
+      <div class="stat warn"><b id="statReels">2</b><small id="statReelsLbl">reels held</small></div>
       <div class="stat"><b>Sun 6pm</b><small>auto-send</small></div>
     </div>
 
@@ -341,11 +341,11 @@
 <script>
 const THRESHOLD = 80;
 const SEED = [
-  { id:1, seen:"4",  conf:52, note:"jersey partly turned away", time:"0:08",
+  { id:1, seen:"4",  conf:52, note:"jersey partly turned away", time:"0:08", reel:"Player reels",
     cands:[{n:"Mia Reyes", j:14},{n:"Jordan Pike", j:4}] },
-  { id:2, seen:"11", conf:48, note:"digits may be swapped", time:"0:12",
+  { id:2, seen:"11", conf:48, note:"digits may be swapped", time:"0:12", reel:"Player reels",
     cands:[{n:"Sam Okafor", j:1},{n:"Noah Brennan", j:11}] },
-  { id:3, seen:"7",  conf:61, note:"motion blur on the number", time:"0:06",
+  { id:3, seen:"7",  conf:61, note:"motion blur on the number", time:"0:06", reel:"Team highlights",
     cands:[{n:"Ava Lindqvist", j:7},{n:"Ella Novak", j:17}] }
 ];
 
@@ -389,10 +389,15 @@ function renderQueue(){
     d.onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openItem(it.id); } };
     q.appendChild(d);
   });
+  const held = new Set(items.map(i => i.reel)).size;
+  const reelWord = held === 1 ? "reel" : "reels";
   document.getElementById("statClips").textContent = items.length;
+  document.getElementById("statReels").textContent = held;
+  document.getElementById("statReelsLbl").textContent = reelWord + " held";
   document.getElementById("holdNote").textContent =
-    items.length === 1 ? "1 clip left. 2 reels are still held."
-                       : items.length + " clips need a check. 2 reels are held until they are resolved.";
+    items.length === 1 ? "1 clip left. 1 reel is still held."
+                       : items.length + " clips need a check. " + held + " " + reelWord + " " +
+                         (held === 1 ? "is" : "are") + " held until they are resolved.";
   if (!items.length) finish();
 }
 
@@ -408,9 +413,10 @@ function openItem(id){
   document.getElementById("gNum").innerHTML = current.conf + "%<small>confident</small>";
   const arc = document.getElementById("gArc");
   arc.setAttribute("stroke-dasharray", "0 100");
+  const conf = current.conf;
   requestAnimationFrame(() => requestAnimationFrame(() => {
     arc.style.transition = "stroke-dasharray .6s ease";
-    arc.setAttribute("stroke-dasharray", current.conf + " 100");
+    arc.setAttribute("stroke-dasharray", conf + " 100");
   }));
   const box = document.getElementById("cands");
   box.innerHTML = "";
