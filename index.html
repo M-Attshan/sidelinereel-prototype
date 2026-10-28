@@ -4,135 +4,348 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>SidelineReel — Coach Review</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --ink:#1b1f24; --muted:#6b7280; --line:#e3e6ea; --bg:#f7f8f9;
-    --card:#ffffff; --accent:#1f5fa8; --warn:#9a6a00; --warnbg:#fdf6e6;
-    --ok:#1d6b45;
+    --ink:#0f1a2b; --ink-2:#334155; --muted:#64748b; --line:#e4e8ee; --line-2:#d3dae3;
+    --bg:#f3f5f8; --card:#ffffff;
+    --accent:#1f5fa8; --accent-2:#174a85; --accent-soft:#e8f0fa;
+    --turf:#14532d; --turf-2:#1d6b3c;
+    --warn:#9a5b00; --warnbg:#fff6e5; --warnline:#f5dfb3;
+    --ok:#166a42; --okbg:#eaf7f0; --okline:#c6e8d5;
+    --bad:#b42318; --badbg:#fdeeec;
+    --radius:16px;
+    --shadow:0 1px 2px rgba(15,26,43,.04),0 6px 20px -8px rgba(15,26,43,.10);
   }
   *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--ink);
-       font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
-  .wrap{max-width:760px;margin:0 auto;padding:24px 20px 60px}
-  header.bar{background:var(--card);border-bottom:1px solid var(--line)}
-  header.bar .wrap{padding:14px 20px;display:flex;align-items:center;justify-content:space-between}
-  .brand{font-weight:700;letter-spacing:-.01em}
-  .brand span{color:var(--accent)}
-  .who{font-size:13px;color:var(--muted)}
-  h1{font-size:21px;margin:0 0 4px;letter-spacing:-.01em}
-  .sub{color:var(--muted);font-size:14px;margin:0 0 20px}
-  .notice{background:var(--warnbg);border:1px solid #f0e2bd;color:var(--warn);
-          border-radius:8px;padding:11px 14px;font-size:14px;margin-bottom:18px}
-  .notice.ok{background:#eef6f1;border-color:#cfe6da;color:var(--ok)}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;margin-bottom:12px}
-  .row{display:flex;gap:14px;padding:14px;align-items:center;cursor:pointer}
-  .row:hover{background:#fbfcfd}
-  .thumb{width:84px;height:58px;border-radius:6px;background:#e9edf1;flex:none;
-         display:flex;align-items:center;justify-content:center;color:#9aa4ae;font-size:11px}
+  html,body,button,input,select,textarea{font-family:"Outfit",system-ui,sans-serif}
+  body{margin:0;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.55;
+       -webkit-font-smoothing:antialiased}
+  a{color:var(--accent);text-decoration:none;font-weight:500}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:780px;margin:0 auto;padding:28px 20px 64px}
+
+  /* Header */
+  header.bar{background:linear-gradient(135deg,var(--turf) 0%,#0f3d22 100%);color:#fff;position:relative;overflow:hidden}
+  header.bar::after{content:"";position:absolute;inset:0;pointer-events:none;
+    background:repeating-linear-gradient(90deg,rgba(255,255,255,.035) 0 60px,transparent 60px 120px)}
+  header.bar .wrap{padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;position:relative;z-index:1}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:19px;letter-spacing:-.02em}
+  .brand .mark{width:32px;height:32px;border-radius:9px;background:#fff;display:grid;place-items:center}
+  .brand .mark svg{width:18px;height:18px}
+  .brand span{color:#9be3b5}
+  .who{font-size:13px;color:rgba(255,255,255,.75);text-align:right}
+  .who b{display:block;color:#fff;font-weight:600;font-size:14px}
+
+  /* Stepper */
+  .steps{display:flex;gap:6px;margin:0 0 26px;padding:0;list-style:none}
+  .steps li{flex:1;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:var(--muted)}
+  .steps li .dot{width:24px;height:24px;border-radius:50%;flex:none;display:grid;place-items:center;
+                 font-size:12px;font-weight:600;background:var(--card);border:1.5px solid var(--line-2);color:var(--muted)}
+  .steps li::after{content:"";flex:1;height:2px;border-radius:2px;background:var(--line)}
+  .steps li:last-child::after{display:none}
+  .steps li.on{color:var(--ink)}
+  .steps li.on .dot{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 0 0 4px var(--accent-soft)}
+  .steps li.done .dot{background:var(--ok);border-color:var(--ok);color:#fff}
+  .steps li.done::after{background:var(--ok)}
+
+  /* Headings */
+  .eyebrow{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin:0 0 6px}
+  h1{font-size:28px;line-height:1.2;margin:0 0 6px;letter-spacing:-.025em;font-weight:700}
+  .sub{color:var(--muted);font-size:14.5px;margin:0 0 22px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .sub .vs{display:inline-flex;align-items:center;gap:6px;font-weight:500;color:var(--ink-2)}
+  .sub .sep{width:4px;height:4px;border-radius:50%;background:var(--line-2)}
+
+  /* Stats */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;box-shadow:var(--shadow)}
+  .stat b{display:block;font-size:26px;font-weight:700;letter-spacing:-.02em;line-height:1.1}
+  .stat small{color:var(--muted);font-size:13px}
+  .stat.warn b{color:var(--warn)}
+
+  /* Notices */
+  .notice{display:flex;gap:12px;align-items:flex-start;background:var(--warnbg);border:1px solid var(--warnline);color:var(--warn);
+          border-radius:12px;padding:12px 16px;font-size:14.5px;font-weight:500;margin-bottom:20px}
+  .notice svg{flex:none;width:20px;height:20px;margin-top:1px}
+  .notice.ok{background:var(--okbg);border-color:var(--okline);color:var(--ok)}
+
+  /* Cards */
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:12px;box-shadow:var(--shadow);overflow:hidden}
+  .row{display:flex;gap:16px;padding:14px;align-items:center;cursor:pointer;transition:background .15s}
+  .card.clip{transition:transform .15s,box-shadow .15s,border-color .15s}
+  .card.clip:hover{transform:translateY(-1px);border-color:var(--line-2);
+                   box-shadow:0 2px 4px rgba(15,26,43,.05),0 12px 28px -10px rgba(15,26,43,.18)}
+  .card.clip:focus-visible{outline:3px solid var(--accent-soft);outline-offset:2px}
+
+  /* Pitch thumbnails */
+  .pitch{position:relative;background:linear-gradient(160deg,var(--turf-2),var(--turf));overflow:hidden}
+  .pitch::before{content:"";position:absolute;inset:0;
+    background:repeating-linear-gradient(90deg,rgba(255,255,255,.05) 0 14%,transparent 14% 28%)}
+  .pitch::after{content:"";position:absolute;left:50%;top:50%;width:46%;aspect-ratio:1;transform:translate(-50%,-50%);
+    border:1.5px solid rgba(255,255,255,.28);border-radius:50%}
+  .pitch .half{position:absolute;left:50%;top:0;bottom:0;width:1.5px;background:rgba(255,255,255,.28)}
+  .thumb{width:104px;height:70px;border-radius:10px;flex:none}
+  .jersey{position:absolute;z-index:2;left:50%;top:50%;transform:translate(-50%,-50%);
+          width:34px;height:34px;border-radius:9px;background:#fff;color:var(--ink);
+          display:grid;place-items:center;font-weight:700;font-size:16px;box-shadow:0 4px 12px rgba(0,0,0,.25)}
+  .jersey.q::after{content:"?";position:absolute;right:-6px;top:-6px;width:16px;height:16px;border-radius:50%;
+          background:#f59e0b;color:#fff;font-size:11px;display:grid;place-items:center}
+
   .row .meta{flex:1;min-width:0}
-  .row .meta b{display:block;font-size:14px}
-  .row .meta small{color:var(--muted);font-size:13px}
-  .pill{font-size:12px;padding:3px 8px;border-radius:999px;background:var(--warnbg);
-        color:var(--warn);border:1px solid #f0e2bd;white-space:nowrap}
-  .chev{color:#b6bec7;font-size:18px}
-  .big{width:100%;height:210px;border-radius:8px;background:#e9edf1;
-       display:flex;align-items:center;justify-content:center;color:#9aa4ae;font-size:13px}
-  .detect{padding:14px;border-bottom:1px solid var(--line)}
-  .detect b{font-size:15px}
-  .detect small{display:block;color:var(--muted)}
-  .opts{padding:6px 14px 14px}
-  .opts p.lbl{font-size:13px;color:var(--muted);margin:10px 0 8px}
-  label.opt{display:flex;gap:10px;align-items:center;border:1px solid var(--line);
-            border-radius:8px;padding:10px 12px;margin-bottom:8px;cursor:pointer}
-  label.opt:hover{border-color:#c9d2db}
-  label.opt input{accent-color:var(--accent)}
-  label.opt .n{font-weight:600}
-  label.opt .j{color:var(--muted);font-size:13px;margin-left:auto}
-  .acts{display:flex;gap:8px;flex-wrap:wrap;padding:14px;border-top:1px solid var(--line)}
-  button{font:600 14px inherit;padding:10px 14px;border-radius:8px;cursor:pointer;
-         border:1px solid var(--line);background:var(--card);color:var(--ink)}
-  button:hover{border-color:#c9d2db}
-  button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
-  button.primary:hover{background:#19518f}
-  .hold{padding:0 14px 14px;color:var(--muted);font-size:13px}
-  .back{background:none;border:0;color:var(--accent);padding:0;margin-bottom:14px;font-weight:600}
-  ul.log{list-style:none;padding:0;margin:0}
-  ul.log li{background:var(--card);border:1px solid var(--line);border-radius:8px;
-            padding:11px 14px;margin-bottom:8px;font-size:14px}
+  .row .meta b{display:block;font-size:16px;font-weight:600;letter-spacing:-.01em}
+  .row .meta small{color:var(--muted);font-size:13.5px}
+  .conf{display:flex;align-items:center;gap:8px;margin-top:6px}
+  .cbar{flex:1;max-width:160px;height:6px;border-radius:99px;background:#eef1f5;overflow:hidden;position:relative}
+  .cbar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#f59e0b,#f97316)}
+  .cbar .thr{position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--ink-2);border-radius:2px}
+  .conf em{font-style:normal;font-size:12.5px;font-weight:600;color:var(--warn)}
+  .pill{font-size:12px;font-weight:600;padding:5px 10px;border-radius:999px;background:var(--warnbg);
+        color:var(--warn);border:1px solid var(--warnline);white-space:nowrap}
+  .chev{color:#a6b0bc;flex:none;width:20px;height:20px}
+
+  /* Review screen */
+  .back{display:inline-flex;align-items:center;gap:6px;background:none;border:0;color:var(--accent);
+        padding:6px 0;margin-bottom:14px;font-weight:600;font-size:14px;cursor:pointer}
+  .back:hover{color:var(--accent-2)}
+  .big{height:250px;margin:14px;border-radius:12px}
+  .big .jersey{width:56px;height:56px;font-size:26px;border-radius:13px}
+  .big .box{position:absolute;z-index:2;left:50%;top:50%;width:120px;height:150px;transform:translate(-50%,-50%);
+            border:2px dashed #fbbf24;border-radius:10px}
+  .big .tag{position:absolute;z-index:3;left:12px;top:12px;font-size:12px;font-weight:600;color:#fff;
+            background:rgba(0,0,0,.4);backdrop-filter:blur(4px);padding:5px 10px;border-radius:99px;display:flex;align-items:center;gap:6px}
+  .big .tag::before{content:"";width:7px;height:7px;border-radius:50%;background:#f87171}
+  .big .time{position:absolute;z-index:3;right:12px;bottom:12px;font-size:12px;font-weight:500;color:#fff;
+             background:rgba(0,0,0,.4);padding:4px 9px;border-radius:7px}
+  .big .play{position:absolute;z-index:3;left:12px;bottom:12px;width:36px;height:36px;border-radius:50%;
+             background:rgba(255,255,255,.9);display:grid;place-items:center}
+
+  .detect{padding:4px 18px 18px;border-bottom:1px solid var(--line);display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+  .detect .txt{flex:1;min-width:220px}
+  .detect b{font-size:19px;font-weight:600;letter-spacing:-.01em}
+  .detect small{display:block;color:var(--muted);font-size:14px;margin-top:2px}
+  .gauge{position:relative;width:76px;height:76px;flex:none}
+  .gauge svg{width:100%;height:100%;transform:rotate(-90deg)}
+  .gauge span{position:absolute;inset:0;display:grid;place-items:center;font-weight:700;font-size:18px;color:var(--warn)}
+  .gauge span small{display:block;font-size:10px;font-weight:500;color:var(--muted);text-align:center;margin-top:-4px}
+
+  .opts{padding:16px 18px 10px}
+  .opts p.lbl{font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+  label.opt{display:flex;gap:14px;align-items:center;border:1.5px solid var(--line);
+            border-radius:12px;padding:12px 14px;margin-bottom:10px;cursor:pointer;transition:border-color .15s,background .15s}
+  label.opt:hover{border-color:var(--line-2);background:#fafbfc}
+  label.opt:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
+  label.opt input{position:absolute;opacity:0;pointer-events:none}
+  label.opt .radio{width:20px;height:20px;border-radius:50%;border:2px solid var(--line-2);flex:none;display:grid;place-items:center;transition:border-color .15s}
+  label.opt:has(input:checked) .radio{border-color:var(--accent)}
+  label.opt:has(input:checked) .radio::after{content:"";width:10px;height:10px;border-radius:50%;background:var(--accent)}
+  label.opt:has(input:focus-visible){outline:3px solid var(--accent-soft);outline-offset:2px}
+  .avatar{width:42px;height:42px;border-radius:11px;flex:none;display:grid;place-items:center;
+          font-weight:700;font-size:17px;color:#fff;background:linear-gradient(150deg,var(--turf-2),var(--turf))}
+  label.opt .who2{flex:1;min-width:0}
+  label.opt .n{display:block;font-weight:600;font-size:16px}
+  label.opt .j{color:var(--muted);font-size:13.5px}
+  label.opt .match{font-size:11.5px;font-weight:600;color:var(--accent);background:#fff;border:1px solid #c9dbf0;
+                   padding:3px 8px;border-radius:99px;white-space:nowrap}
+
+  .acts{display:flex;gap:10px;flex-wrap:wrap;padding:16px 18px;border-top:1px solid var(--line);background:#fafbfc}
+  button.btn{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:14.5px;padding:11px 18px;border-radius:11px;cursor:pointer;
+         border:1.5px solid var(--line-2);background:var(--card);color:var(--ink);transition:all .15s}
+  button.btn svg{width:17px;height:17px}
+  button.btn:hover{border-color:#b8c2ce;transform:translateY(-1px)}
+  button.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 6px 16px -6px rgba(31,95,168,.55)}
+  button.btn.primary:hover{background:var(--accent-2);border-color:var(--accent-2)}
+  button.btn.danger{color:var(--bad);margin-left:auto}
+  button.btn.danger:hover{background:var(--badbg);border-color:#f3c4be}
+  .hold{display:flex;gap:10px;align-items:flex-start;margin:0;padding:14px 18px;color:var(--muted);font-size:13.5px;border-top:1px solid var(--line)}
+  .hold svg{flex:none;width:17px;height:17px;margin-top:2px;color:var(--warn)}
+
+  /* Done screen */
+  .hero-ok{display:flex;align-items:center;gap:16px;margin-bottom:6px}
+  .hero-ok .tick{width:56px;height:56px;border-radius:16px;background:var(--ok);display:grid;place-items:center;flex:none;
+                 box-shadow:0 8px 20px -8px rgba(22,106,66,.6)}
+  .hero-ok .tick svg{width:28px;height:28px;color:#fff}
+  .reels{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:22px}
+  .reel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:flex;gap:12px;align-items:center;box-shadow:var(--shadow)}
+  .reel .ic{width:38px;height:38px;border-radius:10px;background:var(--okbg);color:var(--ok);display:grid;place-items:center;flex:none}
+  .reel .ic svg{width:19px;height:19px}
+  .reel b{display:block;font-weight:600;font-size:14.5px}
+  .reel small{color:var(--ok);font-weight:500;font-size:12.5px}
+  h2{font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+  ul.log{list-style:none;padding:0;margin:0;position:relative}
+  ul.log li{display:flex;gap:14px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:12px;
+            padding:13px 16px;margin-bottom:8px;font-size:14.5px;box-shadow:var(--shadow)}
+  ul.log li .k{flex:none;font-size:11.5px;font-weight:600;padding:4px 9px;border-radius:99px;text-transform:uppercase;letter-spacing:.04em;margin-top:1px}
+  ul.log li .k.confirmed{background:var(--okbg);color:var(--ok)}
+  ul.log li .k.reassigned{background:var(--accent-soft);color:var(--accent)}
+  ul.log li .k.removed{background:var(--badbg);color:var(--bad)}
+  ul.log li .t b{font-weight:600}
   ul.log li em{font-style:normal;color:var(--muted)}
-  .foot{margin-top:26px;color:var(--muted);font-size:12.5px;line-height:1.6;
-        border-top:1px solid var(--line);padding-top:14px}
+
+  .foot{margin-top:36px;color:var(--muted);font-size:13px;line-height:1.65;
+        border-top:1px solid var(--line);padding-top:18px}
+  .foot .by{display:block;margin-top:8px;font-weight:500;color:var(--ink-2)}
+
+  section{animation:in .28s ease both}
+  @keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
   [hidden]{display:none !important}
+
+  @media (max-width:560px){
+    h1{font-size:24px}
+    .stats{grid-template-columns:1fr 1fr 1fr;gap:8px}
+    .stat{padding:12px}
+    .stat b{font-size:22px}
+    .thumb{width:76px;height:58px}
+    .pill{display:none}
+    .steps li span.l{display:none}
+    .reels{grid-template-columns:1fr}
+    .big{height:200px}
+    button.btn{flex:1 1 100%;justify-content:center}
+    button.btn.danger{margin-left:0}
+    .who{display:none}
+  }
 </style>
 </head>
 <body>
 
 <header class="bar">
   <div class="wrap">
-    <div class="brand">Sideline<span>Reel</span></div>
-    <div class="who">Coach view · Ridgeline Youth Soccer</div>
+    <div class="brand">
+      <div class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="#14532d" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10 9.5v5l4.5-2.5z" fill="#14532d"/></svg></div>
+      <div>Sideline<span>Reel</span></div>
+    </div>
+    <div class="who"><b>Coach view</b>Ridgeline Youth Soccer</div>
   </div>
 </header>
 
 <div class="wrap">
 
+  <ol class="steps" id="steps">
+    <li data-s="s1"><span class="dot">1</span><span class="l">Queue</span></li>
+    <li data-s="s2"><span class="dot">2</span><span class="l">Review</span></li>
+    <li data-s="s3"><span class="dot">3</span><span class="l">Released</span></li>
+  </ol>
+
   <!-- SCREEN 1 -->
   <section id="s1">
+    <p class="eyebrow">Needs your eye</p>
     <h1>Clips we are not sure about</h1>
-    <p class="sub">Ridgeline U12 vs Brightwater · Saturday 14 March</p>
-    <div class="notice" id="holdNote">2 reels are held until these are resolved.</div>
+    <p class="sub"><span class="vs">Ridgeline U12 vs Brightwater</span><span class="sep"></span>Saturday 14 March</p>
+
+    <div class="stats">
+      <div class="stat warn"><b id="statClips">3</b><small>clips to check</small></div>
+      <div class="stat warn"><b>2</b><small>reels held</small></div>
+      <div class="stat"><b>Sun 6pm</b><small>auto-send</small></div>
+    </div>
+
+    <div class="notice" id="holdBox">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+      <span id="holdNote">2 reels are held until these are resolved.</span>
+    </div>
     <div id="queue"></div>
   </section>
 
   <!-- SCREEN 2 -->
   <section id="s2" hidden>
-    <button class="back" onclick="toQueue()">← Back to queue</button>
-    <h1>Review clip</h1>
-    <p class="sub" id="revGame">Ridgeline U12 vs Brightwater · Saturday 14 March</p>
+    <button class="back" onclick="toQueue()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      Back to queue
+    </button>
+    <p class="eyebrow">Review clip</p>
+    <h1 id="revTitle">Whose clip is this?</h1>
+    <p class="sub" id="revGame"><span class="vs">Ridgeline U12 vs Brightwater</span><span class="sep"></span>Saturday 14 March</p>
 
     <div class="card">
-      <div style="padding:14px 14px 0"><div class="big">clip preview</div></div>
-      <div class="detect" style="border-top:1px solid var(--line);margin-top:14px">
-        <b id="detTitle">System detected number 4</b>
-        <small id="detConf">52% confident · below the threshold we send on</small>
+      <div class="big pitch">
+        <span class="half"></span>
+        <span class="tag">Clip preview</span>
+        <span class="box"></span>
+        <span class="jersey q" id="bigNum">4</span>
+        <span class="play"><svg width="14" height="14" viewBox="0 0 24 24" fill="#0f1a2b"><path d="M7 5v14l12-7z"/></svg></span>
+        <span class="time" id="bigTime">0:08</span>
+      </div>
+      <div class="detect">
+        <div class="gauge">
+          <svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15.5" fill="none" stroke="#eef1f5" stroke-width="3.5"/>
+            <circle id="gArc" cx="18" cy="18" r="15.5" fill="none" stroke="#f59e0b" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="0 100" pathLength="100"/></svg>
+          <span><div id="gNum">52%<small>confident</small></div></span>
+        </div>
+        <div class="txt">
+          <b id="detTitle">System detected number 4</b>
+          <small id="detConf">Jersey partly turned away · below the 80% threshold we send on</small>
+        </div>
       </div>
       <div class="opts">
-        <p class="lbl">Who is this? Roster for this team:</p>
+        <p class="lbl">Who is this? Roster for this team</p>
         <div id="cands"></div>
       </div>
       <div class="acts">
-        <button class="primary" onclick="act('confirmed')">Confirm match</button>
-        <button onclick="act('reassigned')">Reassign to selected</button>
-        <button onclick="act('removed')">Remove clip</button>
+        <button class="btn primary" onclick="act('confirmed')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+          Confirm match
+        </button>
+        <button class="btn" onclick="act('reassigned')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+          Reassign to selected
+        </button>
+        <button class="btn danger" onclick="act('removed')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/></svg>
+          Remove clip
+        </button>
       </div>
-      <p class="hold">This reel will not send until this clip is resolved. If nothing is done before Sunday 6pm, the reel sends without it.</p>
+      <p class="hold">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        This reel will not send until this clip is resolved. If nothing is done before Sunday 6pm, the reel sends without it.
+      </p>
     </div>
   </section>
 
   <!-- SCREEN 3 -->
   <section id="s3" hidden>
-    <h1>Queue clear</h1>
-    <p class="sub">Ridgeline U12 vs Brightwater · Saturday 14 March</p>
-    <div class="notice ok" id="doneNote">2 reels released.</div>
+    <div class="hero-ok">
+      <div class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+      <div>
+        <p class="eyebrow" style="color:var(--ok)">All resolved</p>
+        <h1 style="margin:0">Queue clear</h1>
+      </div>
+    </div>
+    <p class="sub" style="margin-top:10px"><span class="vs">Ridgeline U12 vs Brightwater</span><span class="sep"></span>Saturday 14 March</p>
+
+    <div class="notice ok">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4z"/></svg>
+      <span id="doneNote">2 reels released.</span>
+    </div>
+
+    <div class="reels">
+      <div class="reel"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10 9.5v5l4.5-2.5z"/></svg></span><div><b>Player reels</b><small>Sent to families</small></div></div>
+      <div class="reel"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10 9.5v5l4.5-2.5z"/></svg></span><div><b>Team highlights</b><small>Sent to the club</small></div></div>
+    </div>
+
+    <h2>Decision record</h2>
     <ul class="log" id="log"></ul>
-    <button class="back" style="margin-top:14px" onclick="reset()">Run through again</button>
+    <button class="back" style="margin-top:14px" onclick="reset()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M1 4v6h6"/><path d="M3.5 15a9 9 0 1 0 2.1-9.4L1 10"/></svg>
+      Run through again
+    </button>
   </section>
 
   <p class="foot">
     Prototype for the SidelineReel roster tagging confirmation flow.
     All names, jersey numbers and confidence scores are placeholder data.
-    It demonstrates the decision points and where the coach sits in the loop, not the detection itself.<br>
-    Ajaia — <a href="https://ajaia.ai">https://ajaia.ai</a>
+    It demonstrates the decision points and where the coach sits in the loop, not the detection itself.
+    <span class="by">Ajaia — <a href="https://ajaia.ai">ajaia.ai</a></span>
   </p>
 </div>
 
 <script>
+const THRESHOLD = 80;
 const SEED = [
-  { id:1, seen:"4",  conf:52, note:"jersey partly turned away",
+  { id:1, seen:"4",  conf:52, note:"jersey partly turned away", time:"0:08",
     cands:[{n:"Mia Reyes", j:14},{n:"Jordan Pike", j:4}] },
-  { id:2, seen:"11", conf:48, note:"digits may be swapped",
+  { id:2, seen:"11", conf:48, note:"digits may be swapped", time:"0:12",
     cands:[{n:"Sam Okafor", j:1},{n:"Noah Brennan", j:11}] },
-  { id:3, seen:"7",  conf:61, note:"motion blur on the number",
+  { id:3, seen:"7",  conf:61, note:"motion blur on the number", time:"0:06",
     cands:[{n:"Ava Lindqvist", j:7},{n:"Ella Novak", j:17}] }
 ];
 
@@ -148,6 +361,10 @@ function reset(){
 
 function show(id){
   ["s1","s2","s3"].forEach(s => document.getElementById(s).hidden = (s !== id));
+  const order = ["s1","s2","s3"], at = order.indexOf(id);
+  document.querySelectorAll("#steps li").forEach((li,i) => {
+    li.className = i < at ? "done" : i === at ? "on" : "";
+  });
   window.scrollTo(0,0);
 }
 
@@ -156,36 +373,56 @@ function renderQueue(){
   q.innerHTML = "";
   items.forEach(it => {
     const d = document.createElement("div");
-    d.className = "card";
+    d.className = "card clip";
+    d.tabIndex = 0;
     d.innerHTML =
       '<div class="row">' +
-        '<div class="thumb">clip</div>' +
+        '<div class="thumb pitch"><span class="half"></span><span class="jersey q">' + it.seen + '</span></div>' +
         '<div class="meta"><b>Detected number ' + it.seen + '</b>' +
-        '<small>' + it.conf + '% confident · ' + it.note + '</small></div>' +
-        '<span class="pill">Needs a check</span><span class="chev">›</span>' +
+        '<small>' + cap(it.note) + '</small>' +
+        '<div class="conf"><span class="cbar"><i style="width:' + it.conf + '%"></i>' +
+        '<span class="thr" style="left:' + THRESHOLD + '%"></span></span><em>' + it.conf + '% confident</em></div></div>' +
+        '<span class="pill">Needs a check</span>' +
+        '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>' +
       '</div>';
-    d.querySelector(".row").onclick = () => openItem(it.id);
+    d.onclick = () => openItem(it.id);
+    d.onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openItem(it.id); } };
     q.appendChild(d);
   });
-  const held = items.length ? 2 : 0;
+  document.getElementById("statClips").textContent = items.length;
   document.getElementById("holdNote").textContent =
     items.length === 1 ? "1 clip left. 2 reels are still held."
                        : items.length + " clips need a check. 2 reels are held until they are resolved.";
   if (!items.length) finish();
 }
 
+function cap(s){ return s.charAt(0).toUpperCase() + s.slice(1); }
+
 function openItem(id){
   current = items.find(i => i.id === id);
   document.getElementById("detTitle").textContent = "System detected number " + current.seen;
   document.getElementById("detConf").textContent =
-    current.conf + "% confident · " + current.note + " · below the threshold we send on";
+    cap(current.note) + " · below the " + THRESHOLD + "% threshold we send on";
+  document.getElementById("bigNum").textContent = current.seen;
+  document.getElementById("bigTime").textContent = current.time;
+  document.getElementById("gNum").innerHTML = current.conf + "%<small>confident</small>";
+  const arc = document.getElementById("gArc");
+  arc.setAttribute("stroke-dasharray", "0 100");
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    arc.style.transition = "stroke-dasharray .6s ease";
+    arc.setAttribute("stroke-dasharray", current.conf + " 100");
+  }));
   const box = document.getElementById("cands");
   box.innerHTML = "";
   current.cands.forEach((c,i) => {
     const l = document.createElement("label");
     l.className = "opt";
-    l.innerHTML = '<input type="radio" name="cand" value="' + c.n + '"' + (i===0?" checked":"") +
-                  '><span class="n">' + c.n + '</span><span class="j">number ' + c.j + '</span>';
+    const isMatch = String(c.j) === current.seen;
+    l.innerHTML = '<input type="radio" name="cand" value="' + c.n + '"' + (i===0?" checked":"") + '>' +
+                  '<span class="radio"></span>' +
+                  '<span class="avatar">' + c.j + '</span>' +
+                  '<span class="who2"><span class="n">' + c.n + '</span><span class="j">Number ' + c.j + '</span></span>' +
+                  (isMatch ? '<span class="match">Matches #' + c.j + '</span>' : '');
     box.appendChild(l);
   });
   show("s2");
@@ -195,10 +432,10 @@ function act(kind){
   const picked = document.querySelector('input[name="cand"]:checked');
   const who = picked ? picked.value : "";
   let line;
-  if (kind === "confirmed")  line = "Confirmed as <em>" + who + "</em> · clip kept, reel released";
-  if (kind === "reassigned") line = "Reassigned to <em>" + who + "</em> · moved to the right reel";
-  if (kind === "removed")    line = "Removed · <em>reel sends without this clip</em>";
-  done.push("Clip showing number " + current.seen + " — " + line);
+  if (kind === "confirmed")  line = "Confirmed as <b>" + who + "</b> <em>· clip kept, reel released</em>";
+  if (kind === "reassigned") line = "Reassigned to <b>" + who + "</b> <em>· moved to the right reel</em>";
+  if (kind === "removed")    line = "Removed <em>· reel sends without this clip</em>";
+  done.push({ kind, html: "Clip showing number " + current.seen + " — " + line });
   items = items.filter(i => i.id !== current.id);
   current = null;
   renderQueue();
@@ -208,12 +445,16 @@ function act(kind){
 function toQueue(){ show("s1"); }
 
 function finish(){
-  const removed = done.filter(d => d.indexOf("Removed") > -1).length;
+  const removed = done.filter(d => d.kind === "removed").length;
   document.getElementById("doneNote").textContent =
-    "2 reels released." + (removed ? " " + removed + " clip removed." : "");
+    "2 reels released." + (removed ? " " + removed + " clip" + (removed > 1 ? "s" : "") + " removed." : "");
   const ul = document.getElementById("log");
   ul.innerHTML = "";
-  done.forEach(d => { const li = document.createElement("li"); li.innerHTML = d; ul.appendChild(li); });
+  done.forEach(d => {
+    const li = document.createElement("li");
+    li.innerHTML = '<span class="k ' + d.kind + '">' + d.kind + '</span><span class="t">' + d.html + '</span>';
+    ul.appendChild(li);
+  });
   show("s3");
 }
 
